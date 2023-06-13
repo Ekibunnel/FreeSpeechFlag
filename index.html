@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div><a>Key : </a><input id="key" value="0x"></input><button onclick="genflag()">Generate Flag</button><a style="display:none"id="download" download="flag.png"><button type="button" onClick="download()">Download</button>
+</a></div>
+<canvas id="myCanvas" width="1920" height="1080" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML canvas tag.</canvas>
+
+<script>
+function genflag() {
+    var key = document.getElementById("key").value;
+    if (key.startsWith("0x")){
+        key = key.substring(2);
+    }
+    if (key.length == 0){
+        alert("key is empty !");
+        return;
+    }
+    var keyArray = key.match(/.{1,6}/g);
+    console.log(keyArray);
+    var c = document.getElementById("myCanvas");
+	var stripwidth = c.width/(keyArray.length-(keyArray[keyArray.length-1].length != 6));
+	console.log(stripwidth);
+
+    var i=0;
+    while(i<keyArray.length){
+		var ctx = c.getContext("2d");
+		if (keyArray[i].length != 6) {
+        	console.log(keyArray[i]);
+			ctx.font = c.height/4+"px DejaVu Sans Mono";
+            ctx.textAlign = "right";
+            ctx.strokeStyle = "#FFF"; 
+            ctx.fillStyle = "#000"; 
+            ctx.lineWidth = 3;
+            ctx.fillText("+"+keyArray[i], c.width-(c.width/10), c.height-(c.height/10));
+			ctx.strokeText("+"+keyArray[i], c.width-(c.width/10), c.height-(c.height/10));
+			
+		}
+        ctx.fillStyle = "#"+keyArray[i];
+        ctx.fillRect(i*stripwidth, 0, stripwidth, c.height);
+        i++;
+    }
+	document.getElementById("download").style = "";
+	return;
+}
+
+function download() {
+    var download = document.getElementById("download");
+    var image = document.getElementById("myCanvas").toDataURL("image/png")
+        .replace("image/png", "image/octet-stream");
+    download.setAttribute("href", image);
+}
+</script>
+
+</body>
+</html>
